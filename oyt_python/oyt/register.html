@@ -1,0 +1,14 @@
+{% extends "parent.html" %}
+
+{% block title %}
+Create an OYT account!
+{% endblock %}
+
+{% block body %}
+<form method="POST" action="register">
+  {% csrf_token %}
+  {{ form }}
+  <br> 
+  <input type="submit" value="Create Account!">
+</form>
+{% endblock %}
