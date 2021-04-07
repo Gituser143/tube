@@ -7,8 +7,10 @@ Login
 {% block body %}
 <form method="POST" action="login">
   {% csrf_token %}
-  {{ form }}
+  <table>
+  {{ form.as_table }}
+  </table>
   <br> 
-  <input type="submit" value="Login!">
+<button type="button" class="btn btn-primary">Login!</button>
 </form>
 {% endblock %}

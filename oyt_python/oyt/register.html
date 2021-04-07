@@ -7,8 +7,10 @@ Create an OYT account!
 {% block body %}
 <form method="POST" action="register">
   {% csrf_token %}
-  {{ form }}
+  <table>
+  {{ form.as_table }}
+  </table>
   <br> 
-  <input type="submit" value="Create Account!">
+  <button type="button" class="btn btn-primary">Create Account!</button>
 </form>
 {% endblock %}

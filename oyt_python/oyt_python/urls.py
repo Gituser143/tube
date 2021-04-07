@@ -18,7 +18,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path
 from oyt.views import HomeView
-from oyt.views import NewVideo
+from oyt.views import NewVideoView
 from oyt.views import LoginView
 from oyt.views import RegisterView
 from oyt.views import ErrorView
@@ -28,7 +28,7 @@ import debug_toolbar
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', HomeView.as_view()),
-    path('new_video', NewVideo.as_view()),
+    path('new_video', NewVideoView.as_view()),
     path('login', LoginView.as_view()),
     path('register', RegisterView.as_view()),
     path('error', ErrorView.as_view()),

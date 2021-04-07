@@ -12,3 +12,9 @@ class RegisterForm(forms.Form):
     email = forms.CharField(label='Email ID', max_length=100)
     first_name = forms.CharField(label='First Name', max_length=100)
     last_name = forms.CharField(label='Last Name', max_length=100)
+
+
+class NewVideoForm(forms.Form):
+    title = forms.CharField(label='Title', max_length=100)
+    description = forms.CharField(label='Description', max_length=300)
+    File = forms.FileField(label='File')

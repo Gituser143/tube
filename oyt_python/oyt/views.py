@@ -2,8 +2,10 @@ from django.shortcuts import render
 from django.views.generic.base import View, HttpResponse, HttpResponseRedirect
 from .forms import LoginForm
 from .forms import RegisterForm
+from .forms import NewVideoForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth import login, authenticate, logout
 # Create your views here.
 
 
@@ -22,17 +24,40 @@ class LoginView(View):
     template_name = "login.html"
 
     def get(self, request):
+        if request.user.is_authenticated:
+            logout(request)
+            return HttpResponseRedirect('/login')
         form = LoginForm()
         return render(request, self.template_name, {'form': form})
 
     def post(self, request):
-        return HttpResponse('This is login view. POST request.')
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+
+            user = authenticate(
+                request=request,
+                username=username,
+                password=password
+            )
+
+            if user is not None:
+                login(request, user)
+                return HttpResponseRedirect('/')
+            else:
+                return render(request, "error.html", {'error': "Error: Invalid Credentials!"})
+
+        return HttpResponseRedirect('/')
+        # return HttpResponse('This is login view. POST request.')
 
 
 class RegisterView(View):
     template_name = "register.html"
 
     def get(self, request):
+        if request.user.is_authenticated:
+            return HttpResponseRedirect('/')
         form = RegisterForm()
         return render(request, self.template_name, {'form': form})
 
@@ -78,15 +103,15 @@ class RegisterView(View):
             new_user.save()
             return HttpResponseRedirect('/login')
 
-        return HttpResponse('This is register view. POST request.')
+        return render(request, "error.html", {'error': "Error: Inavlid Input!"})
 
 
-class NewVideo(View):
+class NewVideoView(View):
     template_name = 'new_video.html'
 
     def get(self, request):
-        variableA = 'New Video'
-        return render(request, self.template_name, {'variableA': variableA})
+        form = NewVideoForm()
+        return render(request, self.template_name, {'form': form})
 
     def post(self, request):
         return HttpResponse('This is index view. POST request.')
