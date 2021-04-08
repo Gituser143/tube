@@ -12,7 +12,13 @@ from hashlib import sha256
 import string
 import random
 import time
-# Create your views here.
+
+
+class LogoutView(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            logout(request)
+        return HttpResponseRedirect('/')
 
 
 class HomeView(View):
@@ -44,6 +50,10 @@ class VideoView(View):
             comment_form = CommentForm()
             context['form'] = comment_form
 
+        comments = Comment.objects.filter(
+            video__id=id).order_by('-datetime')[:5]
+
+        context['comments'] = comments
         return render(request, self.template_name, context)
 
 
@@ -183,11 +193,13 @@ class NewVideoView(View):
 
             hash = sha256(hash_str.encode())
             path = hash.hexdigest()[:10] + "_" + video.name
+            video.name = path
 
             new_video = Video(title=title,
                               description=description,
                               user=request.user,
-                              path=path)
+                              path="/media/" + path,
+                              video=video)
             new_video.save()
 
             # redirect to detail view template of a Video
