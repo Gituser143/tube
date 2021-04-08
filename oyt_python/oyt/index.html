@@ -1,20 +1,37 @@
 {% extends "parent.html" %}
 
 {% block title %}
-OYT Home
+Home
 {% endblock %}
 
 {% block body %}
-<h1>Welcome to OOADSE YouTube (OYT)</h1>
-
-<h2>Recent Videos</h2> <br>
+<h1>Welcome to OOADSE YouTube (OYT)</h1><br>
+<br>
 
 {% for video in most_recent_videos %}
-<div style="align-content: left; width:50%; border-color:aquamarine; border-width:1px; border-style:solid;">
-<h6>{{ video.title }}</h6>
-<p> {{ video.description }} </p>
-<p style="font-size: 7px; color:gray;">Uploaded by {{ video.user }} on {{ video.datetime }} </p>
-    <p style="text-align: right"><a href='/video/{{ video.id }}'>Watch Video</a></p>
-</div>    
+<br>
+<div class="card text-center" style="width: 70rem;">
+  <h5 class="card-header">{{ video.title }}</h5>
+  <div class="card-body">
+    <h5 class="card-title">{{ video.description }}</h5>
+    <p class="card-text">Uploaded by {{ video.user }}</p>
+    <a href="/video/{{ video.id }}" class="btn btn-primary">Watch Video</a>
+  </div>
+  <div class="card-footer text-muted">
+    Uploaded on {{ video.datetime }}
+  </div>
+</div>
+<br>
+
+<!-- <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+          <h1 class="display-4">{{ video.title }}</h1>
+          <p class="lead">{{ video.description }}</p>
+          <p style="font-size: 12px; color:rgb(82, 75, 75);">Uploaded by {{ video.user }} on {{ video.datetime }} </p>
+          <p style="text-align: right"><a href='/video/{{ video.id }}'>Watch Video</a></p>
+        </div>
+</div> -->
 {% endfor %}
+
+
 {% endblock %}
