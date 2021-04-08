@@ -9,7 +9,7 @@ Video -
 
 <h2>{{ video.title }}</h2>
 <video class="video-js" id="my-video" width="1080" height="720" controls data-setup="{}">
-    <source src="{{ video.path }}" type="video/mp4">
+    <source src="{{ video.path }}" type="video/{{ video_type }}">
   Your browser does not support the video tag.
   </video>
 <p>{{ video.description }}</p>

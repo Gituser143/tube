@@ -43,7 +43,8 @@ class VideoView(View):
             return render(request, "error.html", {'error': "Error: Invalid Video URL. Video does not exist!"})
 
         context = {
-            "video": video_by_id
+            "video": video_by_id,
+            "video_type": video_by_id.path.split(".")[-1]
         }
 
         if request.user.is_authenticated == True:
@@ -169,7 +170,7 @@ class RegisterView(View):
 
 class NewVideoView(View):
     template_name = 'new_video.html'
-    supported_types = ['video/mp4', 'video/x-matroska', 'video/webm']
+    supported_types = ['video/mp4', 'video/webm']
 
     def get(self, request):
         if request.user.is_authenticated == False:
