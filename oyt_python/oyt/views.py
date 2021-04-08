@@ -3,6 +3,7 @@ from django.views.generic.base import View, HttpResponse, HttpResponseRedirect
 from .forms import LoginForm
 from .forms import RegisterForm
 from .forms import NewVideoForm
+from .forms import CommentForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import login, authenticate, logout
@@ -24,6 +25,26 @@ class HomeView(View):
 
     def post(self, request):
         return HttpResponse('This is index view. POST request.')
+
+
+class VideoView(View):
+    template_name = "video.html"
+
+    def get(self, request, id):
+        try:
+            video_by_id = Video.objects.get(id=id)
+        except ObjectDoesNotExist:
+            return render(request, "error.html", {'error': "Error: Invalid Video URL. Video does not exist!"})
+
+        context = {
+            "video": video_by_id
+        }
+
+        if request.user.is_authenticated == True:
+            comment_form = CommentForm()
+            context['form'] = comment_form
+
+        return render(request, self.template_name, context)
 
 
 class LoginView(View):
@@ -55,6 +76,31 @@ class LoginView(View):
                 return render(request, "error.html", {'error': "Error: Invalid Credentials!"})
 
         return HttpResponseRedirect('/')
+
+
+class CommentView(View):
+    template_name = "comment.html"
+
+    def post(self, request):
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            # Create Comment
+            comment = form.cleaned_data['text']
+            video_id = request.POST['video']
+            video = Video.objects.get(id=video_id)
+
+            new_comment = Comment(
+                user=request.user,
+                text=comment,
+                video=video
+            )
+
+            new_comment.save()
+            print(new_comment)
+
+            return HttpResponseRedirect('/video/{}'.format(str(video_id)))
+        else:
+            return render(request, "error.html", {'error': "Error: Inavlid Form Input!"})
 
 
 class RegisterView(View):

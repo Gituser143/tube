@@ -1,0 +1,25 @@
+{% extends "parent.html" %}
+
+{% block title %}
+Video - 
+{% endblock %}
+
+
+{% block body %}
+
+<h2>{{ video.title }}</h2>
+VIDEO PLAYER
+<p>{{ video.description }}</p>
+<br><br>
+<h3>Comments</h3>
+
+<form action="/comment" method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <input type='hidden' name='video' value='{{ video.id }}'>
+    <br>
+    <button type="submit" class="btn btn-primary">Post Comment!</button>
+</form>
+
+Comments
+{% endblock %}

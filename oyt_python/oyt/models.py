@@ -16,7 +16,6 @@ class Video(models.Model):
 class Comment(models.Model):
     id = models.AutoField(primary_key=True)
     text = models.CharField(max_length=300)
-    datetime = models.DateField(
-        blank=False, null=False)  # TODO: Auto_now = true
+    datetime = models.DateField(auto_now=True, blank=False, null=False)
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     video = models.ForeignKey(Video, on_delete=models.CASCADE)

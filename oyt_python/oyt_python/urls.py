@@ -22,6 +22,8 @@ from oyt.views import NewVideoView
 from oyt.views import LoginView
 from oyt.views import RegisterView
 from oyt.views import ErrorView
+from oyt.views import VideoView
+from oyt.views import CommentView
 import debug_toolbar
 
 
@@ -32,6 +34,8 @@ urlpatterns = [
     path('login', LoginView.as_view()),
     path('register', RegisterView.as_view()),
     path('error', ErrorView.as_view()),
+    path('video/<int:id>', VideoView.as_view()),
+    path('comment', CommentView.as_view()),
 ]
 
 if settings.DEBUG:
