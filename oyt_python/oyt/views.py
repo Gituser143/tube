@@ -6,6 +6,11 @@ from .forms import NewVideoForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import login, authenticate, logout
+from .models import Video, Comment
+from hashlib import sha256
+import string
+import random
+import time
 # Create your views here.
 
 
@@ -13,8 +18,9 @@ class HomeView(View):
     template_name = 'index.html'
 
     def get(self, request):
-        variableA = 'Title'
-        return render(request, self.template_name, {'variableA': variableA})
+        # fetch videos from db
+        most_recent_videos = Video.objects.order_by('-datetime')[:10]
+        return render(request, self.template_name, {'most_recent_videos': most_recent_videos})
 
     def post(self, request):
         return HttpResponse('This is index view. POST request.')
@@ -49,7 +55,6 @@ class LoginView(View):
                 return render(request, "error.html", {'error': "Error: Invalid Credentials!"})
 
         return HttpResponseRedirect('/')
-        # return HttpResponse('This is login view. POST request.')
 
 
 class RegisterView(View):
@@ -102,19 +107,47 @@ class RegisterView(View):
             # Save user
             new_user.save()
             return HttpResponseRedirect('/login')
-
-        return render(request, "error.html", {'error': "Error: Inavlid Input!"})
+        else:
+            return render(request, "error.html", {'error': "Error: Inavlid Form Input!"})
 
 
 class NewVideoView(View):
     template_name = 'new_video.html'
+    supported_types = ['video/mp4', 'video/x-matroska', 'video/webm']
 
     def get(self, request):
+        if request.user.is_authenticated == False:
+            return HttpResponseRedirect('/login')
         form = NewVideoForm()
         return render(request, self.template_name, {'form': form})
 
     def post(self, request):
-        return HttpResponse('This is index view. POST request.')
+        form = NewVideoForm(request.POST, request.FILES)
+        if form.is_valid():
+            # create a new Video Entry
+            title = form.cleaned_data['title']
+            description = form.cleaned_data['description']
+            video = form.cleaned_data['video']
+
+            if video.content_type not in self.supported_types:
+                return render(request, "error.html", {'error': "Error: Inavlid Video format {}!".format(video.content_type)})
+
+            hash_str = str(round(time.time() * 1000)) + \
+                str(video.name) + str(request.user)
+
+            hash = sha256(hash_str.encode())
+            path = hash.hexdigest()[:10] + "_" + video.name
+
+            new_video = Video(title=title,
+                              description=description,
+                              user=request.user,
+                              path=path)
+            new_video.save()
+
+            # redirect to detail view template of a Video
+            return HttpResponseRedirect('/video/{id}'.format(id=new_video.id))
+        else:
+            return render(request, "error.html", {'error': "Error: Inavlid Form Input!"})
 
 
 class ErrorView(View):

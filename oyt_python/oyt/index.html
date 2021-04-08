@@ -7,7 +7,14 @@ OYT Home
 {% block body %}
 <h1>Welcome to OOADSE YouTube (OYT)</h1>
 
-Most Recent Video:<br>
-Video ID 1<br>
-Video ID 2<br>
+<h2>Recent Videos</h2> <br>
+
+{% for video in most_recent_videos %}
+<div style="align-content: left; width:50%; border-color:aquamarine; border-width:1px; border-style:solid;">
+<h6>{{ video.title }}</h6>
+<p> {{ video.description }} </p>
+<p style="font-size: 7px; color:gray;">Uploaded by {{ video.user }} on {{ video.datetime }} </p>
+    <p style="text-align: right"><a href='/video/{{ video.id }}'>Watch Video</a></p>
+</div>    
+{% endfor %}
 {% endblock %}
