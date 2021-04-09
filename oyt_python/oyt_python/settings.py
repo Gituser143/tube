@@ -57,7 +57,7 @@ ROOT_URLCONF = 'oyt_python.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['oyt'],
+        'DIRS': ['html'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
