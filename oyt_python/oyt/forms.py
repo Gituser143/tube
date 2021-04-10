@@ -21,4 +21,12 @@ class CommentForm(forms.Form):
 class NewVideoForm(forms.Form):
     title = forms.CharField(label='Title', max_length=100)
     description = forms.CharField(label='Description', max_length=300)
+    is_private = forms.BooleanField(label='Private')
     video = forms.FileField()
+
+
+class EditVideoForm(forms.Form):
+    title = forms.CharField(label='Title', max_length=100, required=False)
+    description = forms.CharField(
+        label='Description', max_length=300, required=False)
+    is_private = forms.BooleanField(label='Private', required=False)

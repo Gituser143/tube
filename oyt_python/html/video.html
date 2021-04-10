@@ -7,6 +7,13 @@ Video -
 
 {% block body %}
 
+{% if user.is_authenticated %}
+{% if user.id == video.user_id %}
+<a href="/edit_video/{{ video.id }}">Edit video</a>
+{% endif %}
+{% endif %}
+
+
 <h2>{{ video.title }}</h2>
 <video class="video-js" id="my-video" width="1080" height="720" controls data-setup="{}">
     <source src="{{ video.path }}" type="video/{{ video_type }}">

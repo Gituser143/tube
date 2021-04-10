@@ -12,6 +12,7 @@ class Video(models.Model):
     datetime = models.DateTimeField(auto_now=True, blank=False, null=False)
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     video = models.FileField(null=True)
+    is_private = models.BooleanField(null=False)
 
 
 class Comment(models.Model):
@@ -20,3 +21,8 @@ class Comment(models.Model):
     datetime = models.DateTimeField(auto_now=True, blank=False, null=False)
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
+
+
+class Playlist(models.Model):
+    id = models.AutoField(primary_key=True)
+    video_ids = models.JSONField()

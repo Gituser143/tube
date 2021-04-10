@@ -25,6 +25,7 @@ from oyt.views import ErrorView
 from oyt.views import VideoView
 from oyt.views import CommentView
 from oyt.views import LogoutView
+from oyt.views import EditView
 import debug_toolbar
 from django.conf import settings
 from django.conf.urls.static import static
@@ -40,6 +41,7 @@ urlpatterns = [
     path('video/<int:id>', VideoView.as_view()),
     path('comment', CommentView.as_view()),
     path('logout', LogoutView.as_view()),
+    path('edit_video/<int:id>', EditView.as_view()),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
