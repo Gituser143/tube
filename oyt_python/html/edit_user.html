@@ -1,0 +1,16 @@
+{% extends "parent.html" %}
+
+{% block title %}
+Create an OYT account!
+{% endblock %}
+
+{% block body %}
+<form method="POST" action="edit_user">
+  {% csrf_token %}
+  <table>
+  {{ form.as_table }}
+  </table>
+  <br> 
+  <button type="submit" class="btn btn-primary">Update Account</button>
+</form>
+{% endblock %}

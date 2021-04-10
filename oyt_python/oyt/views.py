@@ -5,6 +5,7 @@ from .forms import RegisterForm
 from .forms import NewVideoForm
 from .forms import CommentForm
 from .forms import EditVideoForm
+from .forms import EditUserForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import login, authenticate, logout
@@ -213,7 +214,7 @@ class NewVideoView(View):
             return render(request, "error.html", {'error': "Error: Inavlid Form Input!"})
 
 
-class EditView(View):
+class EditVideoView(View):
     template_name = "edit_video.html"
 
     def get(self, request, id):
@@ -245,6 +246,43 @@ class EditView(View):
 
             video_by_id.save()
             return HttpResponseRedirect('/video/{id}'.format(id=video_by_id.id))
+        else:
+            return render(request, "error.html", {'error': "Error: Inavlid Form Input!"})
+
+
+class EditUserView(View):
+    template_name = "edit_user.html"
+
+    def get(self, request):
+        if request.user.is_authenticated == False:
+            return HttpResponseRedirect('/login')
+        form = EditUserForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = EditUserForm(request.POST, request.FILES)
+        id = request.user.id
+        if form.is_valid():
+            try:
+                user_by_id = User.objects.get(id=id)
+            except ObjectDoesNotExist:
+                return render(request, "error.html", {'error': "Error: Invalid user ID. User does not exist!"})
+
+            password = form.cleaned_data['password']
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+
+            if password != '':
+                user_by_id.set_password(password)
+
+            if first_name != '':
+                user_by_id.first_name = first_name
+
+            if last_name != '':
+                user_by_id.last_name = last_name
+
+            user_by_id.save()
+            return HttpResponseRedirect('/')
         else:
             return render(request, "error.html", {'error': "Error: Inavlid Form Input!"})
 
