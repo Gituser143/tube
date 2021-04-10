@@ -107,7 +107,6 @@ class CommentView(View):
             )
 
             new_comment.save()
-            print(new_comment)
 
             return HttpResponseRedirect('/video/{}'.format(str(video_id)))
         else:
