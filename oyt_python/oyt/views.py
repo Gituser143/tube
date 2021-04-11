@@ -18,8 +18,7 @@ import string
 import random
 import time
 import os
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+import subprocess
 
 
 class LogoutView(View):
@@ -289,6 +288,13 @@ class NewVideoView(View):
             )
             new_video.save()
 
+            dir_path = os.path.dirname(
+                os.path.dirname(os.path.realpath(__file__)))
+
+            video_input_path = dir_path + '/media/' + path
+            img_output_path = dir_path + '/media/' + path + '.jpg'
+            os.system('ffmpeg -i {ip} -ss 00:00:00.000 -vframes 1 {op}'.format(
+                ip=video_input_path, op=img_output_path))
             # redirect to detail view template of a Video
             return HttpResponseRedirect('/video/{id}'.format(id=new_video.id))
         else:
@@ -448,8 +454,11 @@ class DeleteVideoView(View):
         dir_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
         path = dir_path + video_by_id.path
-        os.remove(path)
-
+        try:
+            os.remove(path)
+            os.remove(path + '.jpg')
+        except:
+            pass
         video_by_id.delete()
         return render(request, "error.html", {'msg': "Video Deleted!"})
 

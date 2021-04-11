@@ -14,15 +14,17 @@ Home
     <h2>Most Recent Videos</h2>
     {% for video in most_recent_videos %}
     <br>
-    <div class="card text-center" style="width: 50rem;">
-      <h5 class="card-header">{{ video.title }}</h5>
+    <div class="card text-center" style="width: 30rem;">
+      <img src="{{ video.path }}.jpg" class="card-img-top" alt="..."
+        preload="metadata" type="video/mp4">
       <div class="card-body">
-        <h5 class="card-title">{{ video.description }}</h5>
-        <p class="card-text">Uploaded by {{ video.user }}</p>
-        <a href="/video/{{ video.id }}" class="btn btn-primary">Watch Video</a>
+        <h5 class="card-title">{{ video.title }}</h5>
+        <h5 class="card-text">{{ video.description }}</h5>
+        <a href="/video/{{ video.id }}" class="btn btn-primary">Watch
+          Video</a>
       </div>
       <div class="card-footer text-muted">
-        Uploaded on {{ video.datetime }}
+        Uploaded by {{ video.user }} on {{ video.datetime }}
       </div>
     </div>
     <br>
@@ -34,15 +36,17 @@ Home
     <h2>Top Liked Videos</h2>
     {% for video in most_liked_videos %}
     <br>
-    <div class="card text-center" style="width: 50rem;">
-      <h5 class="card-header">{{ video.title }}</h5>
+    <div class="card text-center" style="width: 30rem;">
+      <img src="{{ video.path }}.jpg" class="card-img-top" alt="..."
+        preload="metadata" type="video/mp4">
       <div class="card-body">
-        <h5 class="card-title">{{ video.description }}</h5>
-        <p class="card-text">Uploaded by {{ video.user }}</p>
-        <a href="/video/{{ video.id }}" class="btn btn-primary">Watch Video</a>
+        <h5 class="card-title">{{ video.title }}</h5>
+        <h5 class="card-text">{{ video.description }}</h5>
+        <a href="/video/{{ video.id }}" class="btn btn-primary">Watch
+          Video</a>
       </div>
       <div class="card-footer text-muted">
-        Uploaded on {{ video.datetime }}
+        Uploaded by {{ video.user }} on {{ video.datetime }}
       </div>
     </div>
     <br>
