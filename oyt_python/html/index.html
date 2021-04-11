@@ -8,13 +8,13 @@ Home
 <h1>Welcome to OOADSE YouTube (OYT)</h1><br>
 <br>
 
-<div class="row">
+<div class="row justify-content-md-center">
 
   <div class="col">
-    <h2>Recent Videos</h2>
+    <h2>Most Recent Videos</h2>
     {% for video in most_recent_videos %}
     <br>
-    <div class="card text-center" style="width: 40rem;">
+    <div class="card text-center" style="width: 50rem;">
       <h5 class="card-header">{{ video.title }}</h5>
       <div class="card-body">
         <h5 class="card-title">{{ video.description }}</h5>
@@ -31,10 +31,10 @@ Home
   </div>
 
   <div class="col">
-    <h2>Liked Videos</h2>
+    <h2>Top Liked Videos</h2>
     {% for video in most_liked_videos %}
     <br>
-    <div class="card text-center" style="width: 40rem;">
+    <div class="card text-center" style="width: 50rem;">
       <h5 class="card-header">{{ video.title }}</h5>
       <div class="card-body">
         <h5 class="card-title">{{ video.description }}</h5>

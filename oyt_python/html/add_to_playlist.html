@@ -5,22 +5,27 @@ Home
 {% endblock %}
 
 {% block body %}
-<h1>Welcome to OOADSE YouTube (OYT)</h1><br>
+<h1>Add Video to Playlists</h1><br>
 <br>
-<form action="/add_to_playlist/{{ video_id }}" method="POST">
-  {% csrf_token %}
-  {% for playlist in playlists %}
-  <br>
-  <p>
-    <input type="checkbox" id="{{ playlist.id }}" name="checks[]"
-      value="{{ playlist.id }}" />
-    <label for="{{ playlist.id }}">{{ playlist.name }}</label>
-  </p>
-  <br>
 
-  {% endfor %}
+<div class="row justify-content-center">
+  <div class="col-md-4">
+    <form action="/add_to_playlist/{{ video_id }}" method="POST">
+      {% csrf_token %}
+      {% for playlist in playlists %}
+      <ul class="list-group">
+        <li class="list-group-item">
+          <input class="form-check-input me-1" type="checkbox" name="checks[]"
+            value="{{ playlist.id }}" aria-label="...">
+          <label for="{{ playlist.id }}">{{ playlist.name }}</label>
+        </li>
+      </ul>
+      {% endfor %}
+      <br>
 
-  <button type="submit" class="btn btn-primary">Add to playlists!</button>
-</form>
+      <button type="submit" class="btn btn-primary">Add to playlists!</button>
+    </form>
+  </div>
+</div>
 
 {% endblock %}
