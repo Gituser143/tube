@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import login, authenticate, logout
 from django.db.models import Q
+from django.urls import reverse
 from .models import Video, Comment, Playlist
 from hashlib import sha256
 import string
@@ -35,7 +36,9 @@ class HomeView(View):
         # fetch videos from db
         most_recent_videos = Video.objects.order_by(
             '-datetime').filter(Q(is_private=False) | Q(user_id=request.user.id))[:10]
-        return render(request, self.template_name, {'most_recent_videos': most_recent_videos})
+        most_liked_videos = Video.objects.order_by(
+            '-num_likes').filter(Q(is_private=False) | Q(user_id=request.user.id))[:10]
+        return render(request, self.template_name, {'most_recent_videos': most_recent_videos, 'most_liked_videos': most_liked_videos})
 
     def post(self, request):
         return HttpResponse('This is index view. POST request.')
@@ -65,8 +68,16 @@ class VideoView(View):
 
         context = {
             "video": video_by_id,
-            "video_type": video_by_id.path.split(".")[-1]
+            "video_type": video_by_id.path.split(".")[-1],
+            "liked": False
         }
+
+        liked_ids = video_by_id.likes
+        if request.user.is_authenticated:
+            if request.user.id in liked_ids:
+                context['liked'] = True
+
+        context['num_likes'] = video_by_id.num_likes
 
         if request.user.is_authenticated == True:
             comment_form = CommentForm()
@@ -78,12 +89,33 @@ class VideoView(View):
         context['comments'] = comments
         return render(request, self.template_name, context)
 
+    def post(self, request, id):
+        try:
+            video_by_id = Video.objects.get(id=id)
+        except ObjectDoesNotExist:
+            return render(request, "error.html", {'error': "Error: Invalid Video URL. Video does not exist!"})
+        like = request.POST['like']
+
+        if like == 'True':
+            if request.user.id not in video_by_id.likes:
+                video_by_id.likes.append(request.user.id)
+        else:
+            video_by_id.likes.remove(request.user.id)
+
+        video_by_id.num_likes = len(video_by_id.likes)
+        video_by_id.save()
+
+        return HttpResponseRedirect('/video/{}'.format(id))
+
 
 class PlaylistView(View):
     template_name = "playlist.html"
 
     def get(self, request, playlist_id):
-        playlist_by_id = Playlist.objects.get(id=playlist_id)
+        try:
+            playlist_by_id = Playlist.objects.get(id=playlist_id)
+        except ObjectDoesNotExist:
+            return render(request, "error.html", {'error': "Error: Invalid Playlist URL. Playlist does not exist!"})
         video_ids = playlist_by_id.video_ids
         videos = Video.objects.filter(id__in=video_ids)
         context = {'videos': videos, 'playlist': playlist_by_id}
@@ -246,12 +278,15 @@ class NewVideoView(View):
             path = hash.hexdigest()[:10] + "_" + video.name
             video.name = path
 
-            new_video = Video(title=title,
-                              description=description,
-                              user=request.user,
-                              path="/media/" + path,
-                              video=video,
-                              is_private=is_private)
+            new_video = Video(
+                title=title,
+                description=description,
+                user=request.user,
+                path="/media/" + path,
+                video=video,
+                is_private=is_private,
+                likes=[]
+            )
             new_video.save()
 
             # redirect to detail view template of a Video

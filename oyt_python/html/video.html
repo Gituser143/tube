@@ -36,6 +36,27 @@ Video - {{ video.title }}
 </video>
 <p>{{ video.description }}</p>
 <br><br>
+
+{% if form %}
+<form action="/video/{{ video.id }}" method="POST">
+  {% csrf_token %}
+  <br>
+  {% if liked == False %}
+  <input type='hidden' name='like' value='True'>
+  <br>
+  <button type="submit" class="btn btn-primary">Like</button>
+  {% else %}
+  <input type='hidden' name='like' value='False'>
+  <br>
+  <button type="submit" class="btn btn-primary">Unlike</button>
+  {% endif %}
+</form>
+{% endif %}
+
+{{ num_likes }} likes
+<br>
+
+
 <h3>Comments</h3>
 
 {% if form %}

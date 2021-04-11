@@ -13,6 +13,8 @@ class Video(models.Model):
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     video = models.FileField(null=True)
     is_private = models.BooleanField(null=False)
+    likes = models.JSONField()
+    num_likes = models.IntegerField(default=0)
 
 
 class Comment(models.Model):
