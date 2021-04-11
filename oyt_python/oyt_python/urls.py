@@ -27,6 +27,7 @@ from oyt.views import CommentView
 from oyt.views import LogoutView
 from oyt.views import EditVideoView
 from oyt.views import EditUserView
+from oyt.views import CreatePlaylistView
 import debug_toolbar
 from django.conf import settings
 from django.conf.urls.static import static
@@ -44,6 +45,7 @@ urlpatterns = [
     path('logout', LogoutView.as_view()),
     path('edit_video/<int:id>', EditVideoView.as_view()),
     path('edit_user', EditUserView.as_view()),
+    path('new_playlist', CreatePlaylistView.as_view()),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

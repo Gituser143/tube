@@ -6,11 +6,12 @@ from .forms import NewVideoForm
 from .forms import CommentForm
 from .forms import EditVideoForm
 from .forms import EditUserForm
+from .forms import NewPlaylistForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import login, authenticate, logout
 from django.db.models import Q
-from .models import Video, Comment
+from .models import Video, Comment, Playlist
 from hashlib import sha256
 import string
 import random
@@ -210,6 +211,38 @@ class NewVideoView(View):
 
             # redirect to detail view template of a Video
             return HttpResponseRedirect('/video/{id}'.format(id=new_video.id))
+        else:
+            return render(request, "error.html", {'error': "Error: Inavlid Form Input!"})
+
+
+class CreatePlaylistView(View):
+    template_name = "new_playlist.html"
+
+    def get(self, request):
+        if request.user.is_authenticated == False:
+            return HttpResponseRedirect('/login')
+        form = NewPlaylistForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = NewPlaylistForm(request.POST, request.FILES)
+        if form.is_valid():
+            # create a new Playlist Entry
+            name = form.cleaned_data['name']
+            is_private = form.cleaned_data['is_private']
+            user = request.user
+
+            new_playlist = Playlist(
+                name=name,
+                is_private=is_private,
+                user=user,
+                video_ids=[]
+            )
+
+            new_playlist.save()
+
+            # redirect to detail view template of a Video
+            return render(request, "error.html", {'error': "Playlist Created!"})
         else:
             return render(request, "error.html", {'error': "Error: Inavlid Form Input!"})
 

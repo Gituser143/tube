@@ -25,4 +25,7 @@ class Comment(models.Model):
 
 class Playlist(models.Model):
     id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100, null=False)
+    is_private = models.BooleanField(default=False)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     video_ids = models.JSONField()
