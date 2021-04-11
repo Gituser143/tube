@@ -27,15 +27,15 @@ class NewVideoForm(forms.Form):
     video = forms.FileField()
 
 
-class NewPlaylistForm(forms.Form):
-    name = forms.CharField(label='Playlist Name', max_length=100)
+class EditVideoForm(forms.Form):
+    title = forms.CharField(label='Title', max_length=100, required=False)
     description = forms.CharField(
         label='Description', max_length=300, required=False)
     is_private = forms.BooleanField(label='Private', required=False)
 
 
-class EditVideoForm(forms.Form):
-    title = forms.CharField(label='Title', max_length=100, required=False)
+class NewPlaylistForm(forms.Form):
+    name = forms.CharField(label='Playlist Name', max_length=100)
     description = forms.CharField(
         label='Description', max_length=300, required=False)
     is_private = forms.BooleanField(label='Private', required=False)

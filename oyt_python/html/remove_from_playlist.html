@@ -1,0 +1,26 @@
+{% extends "parent.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block body %}
+<h1>Welcome to OOADSE YouTube (OYT)</h1><br>
+<br>
+<form action="/remove_from_playlist/{{ playlist.id }}/" method="POST">
+  {% csrf_token %}
+  {% for video in videos %}
+  <br>
+  <p>
+    <input type="checkbox" id="{{ video.id }}" name="checks[]"
+      value="{{ video.id }}" />
+    <label for="{{ video.id }}">{{ video.title }}</label>
+  </p>
+  <br>
+
+  {% endfor %}
+
+  <button type="submit" class="btn btn-primary">Remove From Playlist!</button>
+</form>
+
+{% endblock %}

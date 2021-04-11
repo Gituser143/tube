@@ -1,7 +1,7 @@
 {% extends "parent.html" %}
 
 {% block title %}
-Video -
+Video - {{ video.title }}
 {% endblock %}
 
 
@@ -12,6 +12,8 @@ Video -
   {% if user.is_authenticated %}
   {% if user.id == video.user_id %}
   <div class="btn-group" role="group" aria-label="Basic outlined example">
+    <a href="/delete_video/{{ video.id }}" class="btn btn-danger">Delete
+      Video</a>
     <a href="/edit_video/{{ video.id }}" class="btn btn-outline-primary">Edit
       Video</a>
     <a href="/add_to_playlist/{{ video.id }}"

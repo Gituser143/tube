@@ -1,0 +1,29 @@
+{% extends "parent.html" %}
+
+{% block title %}
+Delete - {{ video.title }}
+{% endblock %}
+
+
+{% block body %}
+<div class="col-8">
+  Are you sure you want to delete video?
+  <br>
+  Title: {{ video.title }}
+  <br>
+  Description: {{ video.description }}
+  <br>
+</div>
+
+<div class="col-3">
+  <form method="POST" action="/delete_video/{{ video.id }}/"
+    enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="btn-group" role="group" aria-label="Basic outlined example">
+      <a href="/" class="btn btn-outline-primary">Cancel</a>
+      <button type="submit" class="btn btn-danger">Delete</button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

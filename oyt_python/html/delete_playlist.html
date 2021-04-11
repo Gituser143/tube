@@ -1,0 +1,27 @@
+{% extends "parent.html" %}
+
+{% block title %}
+Delete - {{ playlist.name }}
+{% endblock %}
+
+
+{% block body %}
+<div class="col-8">
+  Are you sure you want to delete the playlist?
+  <br>
+  Title: {{ playlist.name }}
+  <br>
+</div>
+
+<div class="col-3">
+  <form method="POST" action="/delete_playlist/{{ playlist.id }}/"
+    enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="btn-group" role="group" aria-label="Basic outlined example">
+      <a href="/playlist_index" class="btn btn-outline-primary">Cancel</a>
+      <button type="submit" class="btn btn-danger">Delete</button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

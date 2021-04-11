@@ -8,6 +8,19 @@ Home
 <h1>{{ playlist.name }}</h1><br>
 <br>
 
+{% if user.is_authenticated %}
+{% if user.id == playlist.user_id %}
+<div class="btn-group" role="group" aria-label="Basic outlined example">
+  <a href="/remove_from_playlist/{{ playlist.id }}"
+    class="btn btn-outline-primary">Remove
+    Videos</a>
+  <a href="/delete_playlist/{{ playlist.id }}" class="btn btn-danger">Delete
+    Playlist</a>
+</div>
+{% endif %}
+{% endif %}
+<br>
+
 {% for video in videos %}
 <br>
 <div class="card text-center" style="width: 70rem;">

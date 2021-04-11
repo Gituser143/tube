@@ -32,6 +32,9 @@ from oyt.views import PlaylistIndexView
 from oyt.views import PlaylistView
 from oyt.views import AddVideoToPlaylistView
 from oyt.views import PlaylistVideoView
+from oyt.views import DeleteVideoView
+from oyt.views import RemoveVideoView
+from oyt.views import DeletePlaylistView
 import debug_toolbar
 from django.conf import settings
 from django.conf.urls.static import static
@@ -55,6 +58,9 @@ urlpatterns = [
     path('playlist/<int:playlist_id>/', PlaylistView.as_view()),
     path('playlist/<int:playlist_id>/<int:video_id>',
          PlaylistVideoView.as_view()),
+    path('delete_video/<int:id>/', DeleteVideoView.as_view()),
+    path('remove_from_playlist/<int:id>/', RemoveVideoView.as_view()),
+    path('delete_playlist/<int:id>/', DeletePlaylistView.as_view()),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

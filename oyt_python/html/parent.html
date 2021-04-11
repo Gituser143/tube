@@ -33,7 +33,9 @@
             </li>
             {% if user.is_authenticated %}
             <li class="nav-item">
-                <a class="nav-link" href="/edit_user">Edit Profile</a>
+                <a class="nav-link {% if request.path == '/edit_user' %} active {% endif %}"
+                    href="/edit_user">Edit Profile</a>
+            </li>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/logout">Log Out</a>

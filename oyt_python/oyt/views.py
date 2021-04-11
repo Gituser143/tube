@@ -16,6 +16,9 @@ from hashlib import sha256
 import string
 import random
 import time
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class LogoutView(View):
@@ -387,6 +390,74 @@ class EditUserView(View):
             return HttpResponseRedirect('/')
         else:
             return render(request, "error.html", {'error': "Error: Inavlid Form Input!"})
+
+
+class DeleteVideoView(View):
+    template_name = "delete_video.html"
+
+    def get(self, request, id):
+        video_by_id = Video.objects.get(id=id)
+        return render(request, self.template_name, {'video': video_by_id})
+
+    def post(self, request, id):
+        video_by_id = Video.objects.get(id=id)
+        playlists = Playlist.objects.all()
+        for playlist in playlists:
+            video_ids = playlist.video_ids
+            try:
+                video_ids.remove(id)
+            except:
+                continue
+            playlist.save()
+
+        dir_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+
+        path = dir_path + video_by_id.path
+        os.remove(path)
+
+        video_by_id.delete()
+        return render(request, "error.html", {'error': "Video Deleted!"})
+
+
+class RemoveVideoView(View):
+    template_name = "remove_from_playlist.html"
+
+    def get(self, request, id):
+        playlist_by_id = Playlist.objects.get(id=id)
+        video_ids = playlist_by_id.video_ids
+        videos = Video.objects.filter(id__in=video_ids)
+        context = {'videos': videos, 'playlist': playlist_by_id}
+        return render(request, self.template_name, context)
+
+    def post(self, request, id):
+        videos = request.POST.getlist('checks[]')
+        playlist_id = id
+        playlist_obj = Playlist.objects.get(id=playlist_id)
+        video_list = playlist_obj.video_ids
+        for video in videos:
+            video_id = int(video)
+            try:
+                video_list.remove(video_id)
+            except:
+                continue
+        playlist_obj.video_ids = video_list
+        playlist_obj.save()
+
+        return HttpResponseRedirect('/playlist/{}'.format(playlist_id))
+
+
+class DeletePlaylistView(View):
+    template_name = "delete_playlist.html"
+
+    def get(self, request, id):
+        playlist_by_id = Playlist.objects.get(id=id)
+        return render(request, self.template_name, {'playlist': playlist_by_id})
+
+    def post(self, request, id):
+        playlist_by_id = Playlist.objects.get(id=id)
+        playlist_by_id.delete()
+
+        return render(request, "error.html", {'error': "Playlist Deleted!"})
 
 
 class ErrorView(View):
