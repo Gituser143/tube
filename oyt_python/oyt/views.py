@@ -416,7 +416,7 @@ class DeleteVideoView(View):
         os.remove(path)
 
         video_by_id.delete()
-        return render(request, "error.html", {'error': "Video Deleted!"})
+        return render(request, "error.html", {'msg': "Video Deleted!"})
 
 
 class RemoveVideoView(View):
@@ -457,7 +457,7 @@ class DeletePlaylistView(View):
         playlist_by_id = Playlist.objects.get(id=id)
         playlist_by_id.delete()
 
-        return render(request, "error.html", {'error': "Playlist Deleted!"})
+        return render(request, "error.html", {'msg': "Playlist Deleted!"})
 
 
 class ErrorView(View):

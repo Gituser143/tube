@@ -1,9 +1,17 @@
 {% extends "parent.html" %}
 
 {% block title %}
+{% if msg %}
+{{ msg }}
+{% else %}
 Error Occurred!
+{% endif %}
 {% endblock %}
 
 {% block body %}
+{% if msg %}
+<h1>{{ msg }}</h1>
+{% else %}
 <h1>{{ error }}</h1>
+{% endif %}
 {% endblock %}

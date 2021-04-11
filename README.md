@@ -10,6 +10,5 @@ Navigate to `localhost:8000`
 TODO
 ====
 
-- [ ] Add optional title to error.html
 - [ ] Add like/dislike functionalites
 - [ ] Order home screen videos based on likes

@@ -20,12 +20,11 @@ Video - {{ video.title }}
       class="btn btn-outline-primary">Add To Playlist</a>
   </div>
   {% else %}
-  <div class="btn-group" role="group" aria-label="Basic outlined example">
-    <a href="/edit_video/{{ video.id }}" class="btn btn-outline-primary">Edit
-      Video</a>
-  </div>
-  {% endif %}
-  {% endif %}
+  <a href="/add_to_playlist/{{ video.id }}" class="btn btn-outline-primary">Add
+    To Playlist</a>
+</div>
+{% endif %}
+{% endif %}
 </div>
 <br>
 
