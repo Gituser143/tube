@@ -1,0 +1,26 @@
+{% extends "parent.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block body %}
+<h1>Welcome to OOADSE YouTube (OYT)</h1><br>
+<br>
+
+{% for playlist in most_recent_playlists %}
+<br>
+<div class="card text-center" style="width: 70rem;">
+  <h5 class="card-header">{{ playlist.name }}</h5>
+  <div class="card-body">
+    <h5 class="card-title">{{ playlist.description }}</h5>
+    <p class="card-text">Uploaded by {{ playlist.user }}</p>
+    <a href="/playlist/{{ playlist.id }}" class="btn btn-primary">Browse Playlist</a>
+  </div>
+</div>
+<br>
+
+{% endfor %}
+
+
+{% endblock %}

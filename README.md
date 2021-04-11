@@ -10,8 +10,6 @@ Navigate to `localhost:8000`
 TODO
 ====
 
-- [ ] Make create playlist option
-  - [ ] Init empty playlist
 - [ ] Modify playlist details
   - [ ] Add individual video to playlist
   - [ ] Delete video from playlist

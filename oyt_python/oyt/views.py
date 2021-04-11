@@ -38,6 +38,19 @@ class HomeView(View):
         return HttpResponse('This is index view. POST request.')
 
 
+class PlaylistView(View):
+    template_name = 'playlist_index.html'
+
+    def get(self, request):
+        # fetch videos from db
+        most_recent_playlists = Playlist.objects.filter(
+            Q(is_private=False) | Q(user_id=request.user.id))[:10]
+        return render(request, self.template_name, {'most_recent_playlists': most_recent_playlists})
+
+    def post(self, request):
+        return HttpResponse('This is index view. POST request.')
+
+
 class VideoView(View):
     template_name = "video.html"
 

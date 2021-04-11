@@ -29,6 +29,8 @@ class NewVideoForm(forms.Form):
 
 class NewPlaylistForm(forms.Form):
     name = forms.CharField(label='Playlist Name', max_length=100)
+    description = forms.CharField(
+        label='Description', max_length=300, required=False)
     is_private = forms.BooleanField(label='Private', required=False)
 
 
