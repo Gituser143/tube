@@ -10,10 +10,9 @@ Navigate to `localhost:8000`
 TODO
 ====
 
-- [ ] Modify playlist details
-  - [ ] Add individual video to playlist
-  - [ ] Delete video from playlist
+- [ ] Add playlist browse
 - [ ] Add like/dislike functionalites
 - [ ] Order home screen videos based on likes
 - [ ] Delete uploaded video
 - [ ] Delete created playlist
+  - [ ] Delete video from playlist

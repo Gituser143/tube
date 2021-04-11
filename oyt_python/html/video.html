@@ -11,6 +11,7 @@ Video -
 {% if user.id == video.user_id %}
 <a href="/edit_video/{{ video.id }}">Edit video</a>
 {% endif %}
+<a href="/add_to_playlist/{{ video.id }}">Add to Playlist</a>
 {% endif %}
 
 

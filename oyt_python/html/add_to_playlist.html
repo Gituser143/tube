@@ -1,0 +1,25 @@
+{% extends "parent.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block body %}
+<h1>Welcome to OOADSE YouTube (OYT)</h1><br>
+<br>
+<form action="/add_to_playlist/{{ video_id }}" method="POST">
+  {% csrf_token %}
+  {% for playlist in playlists %}
+  <br>
+  <p>
+    <input type="checkbox" id="{{ playlist.id }}" name="checks[]" value="{{ playlist.id }}"/>
+    <label for="{{ playlist.id }}">{{ playlist.name }}</label>
+  </p>
+  <br>
+  
+  {% endfor %}
+  
+  <button type="submit" class="btn btn-primary">Add to playlists!</button>
+</form>
+
+{% endblock %}

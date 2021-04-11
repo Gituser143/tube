@@ -260,6 +260,31 @@ class CreatePlaylistView(View):
             return render(request, "error.html", {'error': "Error: Inavlid Form Input!"})
 
 
+class AddVideoToPlaylistView(View):
+    template_name = "add_to_playlist.html"
+
+    def get(self, request, id):
+        # fetch playlists from db
+        playlists = Playlist.objects.filter(
+            Q(is_private=False) | Q(user_id=request.user.id))
+        video_id = id
+        return render(request, self.template_name, {'playlists': playlists, 'video_id': video_id})
+
+    def post(self, request, id):
+        playlists = request.POST.getlist('checks[]')
+        video_id = id
+        for playlist in playlists:
+            playlist_id = int(playlist)
+            playlist_obj = Playlist.objects.get(id=playlist_id)
+            video_list = playlist_obj.video_ids
+            if video_id not in video_list:
+                video_list.append(video_id)
+            playlist_obj.video_ids = video_list
+            playlist_obj.save()
+
+        return HttpResponseRedirect('/')
+
+
 class EditVideoView(View):
     template_name = "edit_video.html"
 
