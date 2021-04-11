@@ -28,8 +28,10 @@ from oyt.views import LogoutView
 from oyt.views import EditVideoView
 from oyt.views import EditUserView
 from oyt.views import CreatePlaylistView
+from oyt.views import PlaylistIndexView
 from oyt.views import PlaylistView
 from oyt.views import AddVideoToPlaylistView
+from oyt.views import PlaylistVideoView
 import debug_toolbar
 from django.conf import settings
 from django.conf.urls.static import static
@@ -48,8 +50,11 @@ urlpatterns = [
     path('edit_video/<int:id>', EditVideoView.as_view()),
     path('edit_user', EditUserView.as_view()),
     path('new_playlist', CreatePlaylistView.as_view()),
-    path('playlist_index', PlaylistView.as_view()),
+    path('playlist_index', PlaylistIndexView.as_view()),
     path('add_to_playlist/<int:id>', AddVideoToPlaylistView.as_view()),
+    path('playlist/<int:playlist_id>/', PlaylistView.as_view()),
+    path('playlist/<int:playlist_id>/<int:video_id>',
+         PlaylistVideoView.as_view()),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

@@ -14,7 +14,7 @@
                 <a class="nav-link {% if request.path == '/' %} active {% endif %}" href="/">Home</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if request.path == '/playlist_index' %} active {% endif %}" href="/playlist_index">Playlists</a>
+                <a class="nav-link {% if request.path|slice:':9' == '/playlist' %} active {% endif %}" href="/playlist_index">Playlists</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if request.path == '/new_video' %} active {% endif %}" href="/new_video">Upload Video</a>
@@ -39,12 +39,7 @@
             {% endif %}
             
         </ul>
-    <!-- <a href="/">Home</a> 
-    | <a href="new_video">Add Video</a> 
-    | <a href="/login">Sign In</a> 
-    | <a href="/register">Sign Up</a> 
-    | <a href="https://www.github.com/Gituser143/ooadse-tube">Source Code</a>
-    <br> -->
+
     <br>
     {% block body %}
     {% endblock %}

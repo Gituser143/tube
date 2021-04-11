@@ -1,0 +1,45 @@
+{% extends "parent.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block body %}
+<h1>{{ playlist.name }}</h1><br>
+<br>
+<div class="row">
+
+  <div class="col-8">  
+    <video class="video-js" id="my-video" width="1080" height="720" controls data-setup="{}">
+      <source src="{{ video.path }}" type="video/{{ video_type }}">
+      Your browser does not support the video tag.
+    </video>
+    <br><br>
+  </div>
+  
+  <div class="col-3">
+    <div class="list-group">
+      <left>
+
+        {% for listvideo in videos %}
+        <a href="/playlist/{{ playlist.id }}/{{ listvideo.id }}" class="list-group-item list-group-item-action 
+            {% if  video.id  ==  listvideo.id  %} active {% endif %}" {% if video.id == listvideo.id %} aria-current="true" {% endif %}>
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ listvideo.title }}</h5>
+            <small>{{ listvideo.datetime }}</small>
+          </div>
+          <!-- <p class="mb-1 justify-content-left">{{ listvideo.description }}</p> -->
+          <div class="d-flex w-100 justify-content-between">
+            <small>Uploaded by {{ listvideo.user }}</small>
+          </div>
+        </a>
+      </left>
+      {% endfor %}
+
+      
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+

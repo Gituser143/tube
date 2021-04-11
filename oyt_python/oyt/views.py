@@ -38,13 +38,13 @@ class HomeView(View):
         return HttpResponse('This is index view. POST request.')
 
 
-class PlaylistView(View):
+class PlaylistIndexView(View):
     template_name = 'playlist_index.html'
 
     def get(self, request):
         # fetch videos from db
         most_recent_playlists = Playlist.objects.filter(
-            Q(is_private=False) | Q(user_id=request.user.id))[:10]
+            Q(is_private=False) | Q(user_id=request.user.id)).order_by('name')[:10]
         return render(request, self.template_name, {'most_recent_playlists': most_recent_playlists})
 
     def post(self, request):
@@ -73,6 +73,35 @@ class VideoView(View):
             video__id=id).order_by('-datetime')[:5]
 
         context['comments'] = comments
+        return render(request, self.template_name, context)
+
+
+class PlaylistView(View):
+    template_name = "playlist.html"
+
+    def get(self, request, playlist_id):
+        playlist_by_id = Playlist.objects.get(id=playlist_id)
+        video_ids = playlist_by_id.video_ids
+        videos = Video.objects.filter(id__in=video_ids)
+        context = {'videos': videos, 'playlist': playlist_by_id}
+        return render(request, self.template_name, context)
+
+
+class PlaylistVideoView(View):
+    template_name = "playlist_video.html"
+
+    def get(self, request, playlist_id, video_id):
+        playlist_by_id = Playlist.objects.get(id=playlist_id)
+        video_ids = playlist_by_id.video_ids
+        videos = Video.objects.filter(id__in=video_ids)
+
+        video_by_id = Video.objects.get(id=video_id)
+        context = {
+            'video': video_by_id,
+            'videos': videos,
+            'playlist': playlist_by_id,
+            'video_type': video_by_id.path.split(".")[-1]
+        }
         return render(request, self.template_name, context)
 
 
@@ -243,12 +272,14 @@ class CreatePlaylistView(View):
             # create a new Playlist Entry
             name = form.cleaned_data['name']
             is_private = form.cleaned_data['is_private']
+            description = form.cleaned_data['description']
             user = request.user
 
             new_playlist = Playlist(
                 name=name,
                 is_private=is_private,
                 user=user,
+                description=description,
                 video_ids=[]
             )
 
@@ -266,7 +297,7 @@ class AddVideoToPlaylistView(View):
     def get(self, request, id):
         # fetch playlists from db
         playlists = Playlist.objects.filter(
-            Q(is_private=False) | Q(user_id=request.user.id))
+            user_id=request.user.id).order_by('name')
         video_id = id
         return render(request, self.template_name, {'playlists': playlists, 'video_id': video_id})
 

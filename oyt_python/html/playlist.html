@@ -1,0 +1,29 @@
+{% extends "parent.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block body %}
+<h1>{{ playlist.name }}</h1><br>
+<br>
+
+  {% for video in videos %}
+  <br>
+  <div class="card text-center" style="width: 70rem;">
+    <h5 class="card-header">{{ video.title }}</h5>
+    <div class="card-body">
+      <h5 class="card-title">{{ video.description }}</h5>
+      <p class="card-text">Uploaded by {{ video.user }}</p>
+      <a href="/playlist/{{ playlist.id }}/{{ video.id }}" class="btn btn-primary">Watch Video</a>
+    </div>
+    <div class="card-footer text-muted">
+      Uploaded on {{ video.datetime }}
+    </div>
+  </div>
+  <br>
+  
+  {% endfor %}
+
+{% endblock %}
+
