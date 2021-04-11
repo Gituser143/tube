@@ -8,9 +8,9 @@ Create an OYT account!
 <form method="POST" action="edit_user">
   {% csrf_token %}
   <table>
-  {{ form.as_table }}
+    {{ form.as_table }}
   </table>
-  <br> 
+  <br>
   <button type="submit" class="btn btn-primary">Update Account</button>
 </form>
 {% endblock %}

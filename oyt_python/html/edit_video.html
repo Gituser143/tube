@@ -8,13 +8,13 @@ OYT Edit Video
 <form method="POST" action="{{video.id}}" enctype="multipart/form-data">
   {% csrf_token %}
   <table>
-  {{ form.as_table }}
-  <tr>
-    <td></td>
-    <td>
-    <button type="submit" class="btn btn-primary">Edit Video</button>
-    </td>
-  </tr>
+    {{ form.as_table }}
+    <tr>
+      <td></td>
+      <td>
+        <button type="submit" class="btn btn-primary">Edit Video</button>
+      </td>
+    </tr>
   </table>
 </form>
 {% endblock %}

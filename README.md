@@ -10,9 +10,9 @@ Navigate to `localhost:8000`
 TODO
 ====
 
-- [ ] Add like/dislike functionalites
-- [ ] Order home screen videos based on likes
+- [ ] Add optional title to error.html
 - [ ] Delete uploaded video
 - [ ] Delete created playlist
   - [ ] Delete video from playlist
-- [ ] Add optional title to error.html
+- [ ] Add like/dislike functionalites
+- [ ] Order home screen videos based on likes

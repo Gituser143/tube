@@ -12,13 +12,14 @@ Home
   {% for playlist in playlists %}
   <br>
   <p>
-    <input type="checkbox" id="{{ playlist.id }}" name="checks[]" value="{{ playlist.id }}"/>
+    <input type="checkbox" id="{{ playlist.id }}" name="checks[]"
+      value="{{ playlist.id }}" />
     <label for="{{ playlist.id }}">{{ playlist.name }}</label>
   </p>
   <br>
-  
+
   {% endfor %}
-  
+
   <button type="submit" class="btn btn-primary">Add to playlists!</button>
 </form>
 
