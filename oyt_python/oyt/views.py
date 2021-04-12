@@ -40,7 +40,10 @@ class HomeView(View):
         return render(request, self.template_name, {'most_recent_videos': most_recent_videos, 'most_liked_videos': most_liked_videos})
 
     def post(self, request):
-        return HttpResponse('This is index view. POST request.')
+        name = request.POST.get('search_value')
+        videos = Video.objects.filter(Q(is_private=False) | Q(
+            user_id=request.user.id)).filter(Q(title__contains=name) | Q(description__contains=name))
+        return render(request, self.template_name, {'searched': True, 'videos': videos})
 
 
 class PlaylistIndexView(View):

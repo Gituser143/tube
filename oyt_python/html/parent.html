@@ -12,7 +12,6 @@
 
 <body>
     <center>
-
         <ul class="nav nav-tabs">
             <li class="nav-item">
 
@@ -52,7 +51,35 @@
             {% endif %}
 
         </ul>
+        {% if request.path == '/' %}
+        <nav class="navbar navbar-light bg-light">
+            <div class=" container-fluid">
+                <form class="d-flex" action="/" method="POST">
+                    {% csrf_token %}
 
+                    <input class="form-control me-2" type="search"
+                        placeholder="Search Videos" aria-label="Search"
+                        name="search_value">
+                    <button class="btn btn-outline-success"
+                        type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+        {% elif request.path == '/playlist_index' %}
+        <nav class="navbar navbar-light bg-light">
+            <div class=" container-fluid">
+                <form class="d-flex" action="/playlist_index" method="POST">
+                    {% csrf_token %}
+
+                    <input class="form-control me-2" type="search"
+                        placeholder="Search Playlists" aria-label="Search"
+                        name="search_value">
+                    <button class="btn btn-outline-success"
+                        type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+        {% endif %}
         <br>
         {% block body %}
         {% endblock %}
