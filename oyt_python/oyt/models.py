@@ -12,7 +12,7 @@ class Video(models.Model):
     datetime = models.DateTimeField(auto_now=True, blank=False, null=False)
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     video = models.FileField(null=True)
-    is_private = models.BooleanField(null=False)
+    is_private = models.BooleanField(default=False)
     likes = models.JSONField()
     num_likes = models.IntegerField(default=0)
 
