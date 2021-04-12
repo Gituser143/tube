@@ -130,7 +130,7 @@ class VideoTestCases(TestCase):
 
     def test_private_video(self):
         '''
-        Verify user cannot access private vidoes owned by others
+        Verify user cannot access private videos owned by others
         '''
         u = User.objects.get(username="test_user_2")
         videos = Video.objects.filter(
