@@ -71,6 +71,9 @@ class VideoView(View):
             "liked": False
         }
 
+        if video_by_id.is_private and request.user.id != video_by_id.user_id:
+            return render(request, "error.html", {'error': "Error: Invalid video URL. video does not exist!"})
+
         liked_ids = video_by_id.likes
         if request.user.is_authenticated:
             if request.user.id in liked_ids:
@@ -114,6 +117,8 @@ class PlaylistView(View):
         try:
             playlist_by_id = Playlist.objects.get(id=playlist_id)
         except ObjectDoesNotExist:
+            return render(request, "error.html", {'error': "Error: Invalid Playlist URL. Playlist does not exist!"})
+        if playlist_by_id.is_private and request.user.id != playlist_by_id.user_id:
             return render(request, "error.html", {'error': "Error: Invalid Playlist URL. Playlist does not exist!"})
         video_ids = playlist_by_id.video_ids
         videos = Video.objects.filter(id__in=video_ids)
