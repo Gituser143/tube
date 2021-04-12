@@ -53,10 +53,13 @@ class PlaylistIndexView(View):
         # fetch videos from db
         most_recent_playlists = Playlist.objects.filter(
             Q(is_private=False) | Q(user_id=request.user.id)).order_by('name')[:10]
-        return render(request, self.template_name, {'most_recent_playlists': most_recent_playlists})
+        return render(request, self.template_name, {'playlists': most_recent_playlists})
 
     def post(self, request):
-        return HttpResponse('This is index view. POST request.')
+        name = request.POST.get('search_value')
+        playlists = Playlist.objects.filter(Q(is_private=False) | Q(
+            user_id=request.user.id)).filter(Q(name__contains=name) | Q(description__contains=name))
+        return render(request, self.template_name, {'playlists': playlists})
 
 
 class VideoView(View):
