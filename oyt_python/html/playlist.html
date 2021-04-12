@@ -11,11 +11,11 @@ Home
 {% if user.is_authenticated %}
 {% if user.id == playlist.user_id %}
 <div class="btn-group" role="group" aria-label="Basic outlined example">
+  <a href="/delete_playlist/{{ playlist.id }}" class="btn btn-danger">Delete
+    Playlist</a>
   <a href="/remove_from_playlist/{{ playlist.id }}"
     class="btn btn-outline-primary">Remove
     Videos</a>
-  <a href="/delete_playlist/{{ playlist.id }}" class="btn btn-danger">Delete
-    Playlist</a>
 </div>
 {% endif %}
 {% endif %}
@@ -23,16 +23,18 @@ Home
 
 {% for video in videos %}
 <br>
-<div class="card text-center" style="width: 70rem;">
-  <h5 class="card-header">{{ video.title }}</h5>
+<div class="card text-center" style="width: 30rem;">
+  <img src="{{ video.path }}.jpg" class="card-img-top" alt="..."
+    preload="metadata" type="video/mp4">
   <div class="card-body">
-    <h5 class="card-title">{{ video.description }}</h5>
-    <p class="card-text">Uploaded by {{ video.user }}</p>
+    <h4 class="card-title">{{ video.title }}</h4>
+    <p class="card-text">{{ video.description }}</p>
     <a href="/playlist/{{ playlist.id }}/{{ video.id }}"
-      class="btn btn-primary">Watch Video</a>
+      class="btn btn-primary">Watch
+      Video</a>
   </div>
   <div class="card-footer text-muted">
-    Uploaded on {{ video.datetime }}
+    Uploaded by {{ video.user }} on {{ video.datetime }}
   </div>
 </div>
 <br>

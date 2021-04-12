@@ -7,20 +7,32 @@ Home
 {% block body %}
 <h1>Welcome to OOADSE YouTube (OYT)</h1><br>
 <br>
-<form action="/remove_from_playlist/{{ playlist.id }}/" method="POST">
-  {% csrf_token %}
-  {% for video in videos %}
-  <br>
-  <p>
-    <input type="checkbox" id="{{ video.id }}" name="checks[]"
-      value="{{ video.id }}" />
-    <label for="{{ video.id }}">{{ video.title }}</label>
-  </p>
-  <br>
+<div class="row">
+  <center>
 
-  {% endfor %}
+    <div class="col-md-4">
 
-  <button type="submit" class="btn btn-primary">Remove From Playlist!</button>
-</form>
+      <form action="/remove_from_playlist/{{ playlist.id }}/" method="POST">
+        {% csrf_token %}
+
+        <ul class="list-group">
+          {% for video in videos %}
+          <li class="list-group-item">
+            <input class="form-check-input me-1" id="{{ video.id }}"
+              type="checkbox" value="{{ video.id }}" aria-label="..."
+              name="checks[]">
+            {{ video.title }}
+          </li>
+
+          {% endfor %}
+        </ul>
+
+        <br>
+        <button type="submit" class="btn btn-primary">Remove From
+          Playlist!</button>
+      </form>
+    </div>
+  </center>
+</div>
 
 {% endblock %}
