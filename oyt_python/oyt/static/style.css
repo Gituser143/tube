@@ -1,0 +1,55 @@
+body {
+    font-family: Work Sans, sans-serif;
+}
+
+.nav-tabs {
+    align-items: center;
+}
+
+.row {
+    --bs-gutter-x: 0;
+}
+
+center a {
+    color: #9b1515;
+}
+
+center a:hover {
+    color: #7b1515;
+}
+
+.nav-tabs #homebtn {
+    font-size: 2em;
+    font-weight: 600;
+    color: #000;
+    border-color: #fff #fff #dee2e6 #fff;
+}
+
+#homebtn:hover {
+    color: #9b1515;
+}
+
+.container-fluid {
+    width: 25%;
+    margin-right: 2%;
+    margin-bottom: 0;
+}
+
+.d-flex {
+    margin-bottom: 0;
+}
+
+.btn-primary {
+    background-color: #9b1515;
+    border-color: #930606;
+}
+
+.btn-primary:hover {
+    background-color: #7b1515;
+    border-color: #730606;
+}
+
+.nav-tabs .nav-link.active {
+    color: #7b1515;
+    border-color: #fff #fff #730606 #fff;
+}

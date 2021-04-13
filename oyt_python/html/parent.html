@@ -1,3 +1,4 @@
+{% load static %}
 <html>
 
 <head>
@@ -9,31 +10,33 @@
     integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
     crossorigin="anonymous">
 <link href="https://vjs.zencdn.net/7.11.4/video-js.css" rel="stylesheet" />
-
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.9.0/css/all.css">
+<link rel="stylesheet" href="{% static 'style.css' %}">
 <body>
     <center>
         <ul class="nav nav-tabs">
             <li class="nav-item">
-
                 <a class="nav-link {% if request.path == '/' %} active {% endif %}"
-                    href="/">Home</a>
+                    id="homebtn" href="/"><i class="fab fa-youtube"></i> OYT</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if request.path|slice:':9' == '/playlist' %} active {% endif %}"
-                    href="/playlist_index">Playlists</a>
+                    href="/playlist_index"><i class="fas fa-play"></i> Playlists</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if request.path == '/new_video' %} active {% endif %}"
-                    href="/new_video">Upload Video</a>
+                    href="/new_video"><i class="fas fa-arrow-up"></i> Upload Video</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if request.path == '/new_playlist' %} active {% endif %}"
-                    href="/new_playlist">Create Playlist</a>
+                    href="/new_playlist"><i class="fas fa-plus"></i> Create Playlist</a>
             </li>
             {% if user.is_authenticated %}
             <li class="nav-item">
                 <a class="nav-link {% if request.path == '/edit_user' %} active {% endif %}"
-                    href="/edit_user">Edit Profile</a>
+                    href="/edit_user"><i class="fas fa-pen"></i> Edit Profile</a>
             </li>
             </li>
             <li class="nav-item">
@@ -50,23 +53,20 @@
             </li>
             {% endif %}
 
-        </ul>
         {% if request.path == '/' %}
-        <nav class="navbar navbar-light bg-light">
-            <div class=" container-fluid">
+            <div class=" container-fluid" id="homesearch">
                 <form class="d-flex" action="/" method="POST">
                     {% csrf_token %}
 
                     <input class="form-control me-2" type="search"
-                        placeholder="Search Videos" aria-label="Search"
-                        name="search_value">
+                           placeholder="Search Videos" aria-label="Search"
+                           name="search_value">
                     <button class="btn btn-primary"
-                        type="submit">Search</button>
+                            type="submit">Search</button>
                 </form>
             </div>
-        </nav>
+        </ul>
         {% elif request.path == '/playlist_index' %}
-        <nav class="navbar navbar-light bg-light">
             <div class=" container-fluid">
                 <form class="d-flex" action="/playlist_index" method="POST">
                     {% csrf_token %}
@@ -78,8 +78,8 @@
                         type="submit">Search</button>
                 </form>
             </div>
-        </nav>
         {% endif %}
+        </ul>
         <br>
         {% block body %}
         {% endblock %}

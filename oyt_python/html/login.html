@@ -5,6 +5,7 @@ Login
 {% endblock %}
 
 {% block body %}
+<div>
 <form method="POST" action="login">
   {% csrf_token %}
   <table>
@@ -13,4 +14,5 @@ Login
   <br>
   <button type="submit" class="btn btn-primary">Login!</button>
 </form>
+</div>
 {% endblock %}
