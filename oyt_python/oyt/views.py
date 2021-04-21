@@ -1,12 +1,6 @@
 from django.shortcuts import render
 from django.views.generic.base import View, HttpResponse, HttpResponseRedirect
-from .forms import LoginForm
-from .forms import RegisterForm
-from .forms import NewVideoForm
-from .forms import CommentForm
-from .forms import EditVideoForm
-from .forms import EditUserForm
-from .forms import NewPlaylistForm
+from .forms import LoginForm, RegisterForm, NewVideoForm, CommentForm, EditVideoForm, EditUserForm, NewPlaylistForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import login, authenticate, logout
@@ -31,14 +25,17 @@ class LogoutView(View):
 class HomeView(View):
     template_name = 'index.html'
 
+    # Fetch videos from db
+    # Fetch only public videos or private videos owned by user
     def get(self, request):
-        # fetch videos from db
         most_recent_videos = Video.objects.order_by(
             '-datetime').filter(Q(is_private=False) | Q(user_id=request.user.id))[:10]
         most_liked_videos = Video.objects.order_by(
             '-num_likes').filter(Q(is_private=False) | Q(user_id=request.user.id))[:10]
         return render(request, self.template_name, {'most_recent_videos': most_recent_videos, 'most_liked_videos': most_liked_videos})
 
+    # Get string searched for and filter videos with
+    # string in name or description
     def post(self, request):
         name = request.POST.get('search_value')
         videos = Video.objects.filter(Q(is_private=False) | Q(
@@ -49,12 +46,15 @@ class HomeView(View):
 class PlaylistIndexView(View):
     template_name = 'playlist_index.html'
 
+    # Fetch videos from db
+    # Fetch only public videos or private videos owned by user
     def get(self, request):
-        # fetch videos from db
         most_recent_playlists = Playlist.objects.filter(
             Q(is_private=False) | Q(user_id=request.user.id)).order_by('name')[:10]
         return render(request, self.template_name, {'playlists': most_recent_playlists})
 
+    # Get string searched for and filter playlists with
+    # string in name or description
     def post(self, request):
         name = request.POST.get('search_value')
         playlists = Playlist.objects.filter(Q(is_private=False) | Q(
@@ -66,6 +66,11 @@ class VideoView(View):
     template_name = "video.html"
 
     def get(self, request, id):
+        '''
+        Get requested video by ID
+        '''
+
+        # Throw exception if video does not exist
         try:
             video_by_id = Video.objects.get(id=id)
         except ObjectDoesNotExist:
@@ -77,9 +82,11 @@ class VideoView(View):
             "liked": False
         }
 
+        # Handle case if video is private and not owned by user
         if video_by_id.is_private and request.user.id != video_by_id.user_id:
             return render(request, "error.html", {'error': "Error: Invalid video URL. video does not exist!"})
 
+        # Compute likes
         liked_ids = video_by_id.likes
         if request.user.is_authenticated:
             if request.user.id in liked_ids:
@@ -87,29 +94,38 @@ class VideoView(View):
 
         context['num_likes'] = video_by_id.num_likes
 
+        # Display comment box only if user is authenticaed
         if request.user.is_authenticated == True:
             comment_form = CommentForm()
             context['form'] = comment_form
 
+        # Display comments for video
         comments = Comment.objects.filter(
             video__id=id).order_by('-datetime')[:5]
-
         context['comments'] = comments
+
         return render(request, self.template_name, context)
 
     def post(self, request, id):
+        '''
+        Like/unlike specified video
+        '''
+
+        # Throw exception if video does not exist
         try:
             video_by_id = Video.objects.get(id=id)
         except ObjectDoesNotExist:
             return render(request, "error.html", {'error': "Error: Invalid Video URL. Video does not exist!"})
         like = request.POST['like']
 
+        # Add/remove userID to liked IDs
         if like == 'True':
             if request.user.id not in video_by_id.likes:
                 video_by_id.likes.append(request.user.id)
         else:
             video_by_id.likes.remove(request.user.id)
 
+        # Compute number of likes
         video_by_id.num_likes = len(video_by_id.likes)
         video_by_id.save()
 
@@ -120,15 +136,24 @@ class PlaylistView(View):
     template_name = "playlist.html"
 
     def get(self, request, playlist_id):
+        '''
+        Display videos inside playlist
+        '''
+
+        # Throw exception if playlist does not exist
         try:
             playlist_by_id = Playlist.objects.get(id=playlist_id)
         except ObjectDoesNotExist:
             return render(request, "error.html", {'error': "Error: Invalid Playlist URL. Playlist does not exist!"})
+
+        # Handle case when playlist is private and not owned by user
         if playlist_by_id.is_private and request.user.id != playlist_by_id.user_id:
             return render(request, "error.html", {'error': "Error: Invalid Playlist URL. Playlist does not exist!"})
+
         video_ids = playlist_by_id.video_ids
         videos = Video.objects.filter(id__in=video_ids)
         context = {'videos': videos, 'playlist': playlist_by_id}
+
         return render(request, self.template_name, context)
 
 
@@ -136,7 +161,21 @@ class PlaylistVideoView(View):
     template_name = "playlist_video.html"
 
     def get(self, request, playlist_id, video_id):
-        playlist_by_id = Playlist.objects.get(id=playlist_id)
+        '''
+        Display video within playlist along with list of video
+        '''
+
+        # Throw exception if playlist does not exist
+        try:
+            playlist_by_id = Playlist.objects.get(id=playlist_id)
+        except ObjectDoesNotExist:
+            return render(request, "error.html", {'error': "Error: Invalid Playlist URL. Playlist does not exist!"})
+
+        # Handle case when playlist is private and not owned by user
+        if playlist_by_id.is_private and request.user.id != playlist_by_id.user_id:
+            return render(request, "error.html", {'error': "Error: Invalid Playlist URL. Playlist does not exist!"})
+
+        # fetch video IDs and videos
         video_ids = playlist_by_id.video_ids
         videos = Video.objects.filter(id__in=video_ids)
 
@@ -147,6 +186,7 @@ class PlaylistVideoView(View):
             'playlist': playlist_by_id,
             'video_type': video_by_id.path.split(".")[-1]
         }
+
         return render(request, self.template_name, context)
 
 
@@ -154,13 +194,21 @@ class LoginView(View):
     template_name = "login.html"
 
     def get(self, request):
+        '''
+        Render login page, redirect to home if logged in
+        '''
         if request.user.is_authenticated:
             logout(request)
             return HttpResponseRedirect('/login')
         form = LoginForm()
+
         return render(request, self.template_name, {'form': form})
 
     def post(self, request):
+        '''
+        Authenticarte user login and redirect to home page if valid
+        '''
+
         form = LoginForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data['username']
@@ -185,12 +233,24 @@ class CommentView(View):
     template_name = "comment.html"
 
     def post(self, request):
+        '''
+        Post comment on video if user is authenticated
+        '''
         form = CommentForm(request.POST)
         if form.is_valid():
             # Create Comment
             comment = form.cleaned_data['text']
             video_id = request.POST['video']
-            video = Video.objects.get(id=video_id)
+
+            # Throw exception if video does not exist
+            try:
+                video = Video.objects.get(id=video_id)
+            except ObjectDoesNotExist:
+                return render(request, "error.html", {'error': "Error: Invalid Video URL. Video does not exist!"})
+
+            # Handle case if video is private and not owned by user
+            if video.is_private and request.user.id != video.user_id:
+                return render(request, "error.html", {'error': "Error: Invalid video URL. video does not exist!"})
 
             new_comment = Comment(
                 user=request.user,
@@ -209,12 +269,20 @@ class RegisterView(View):
     template_name = "register.html"
 
     def get(self, request):
+        '''
+        Render sign up page
+        '''
+
         if request.user.is_authenticated:
             return HttpResponseRedirect('/')
         form = RegisterForm()
         return render(request, self.template_name, {'form': form})
 
     def post(self, request):
+        '''
+        Validate and register user
+        '''
+
         form = RegisterForm(request.POST)
         if form.is_valid():
             # Create Account
@@ -264,12 +332,20 @@ class NewVideoView(View):
     supported_types = ['video/mp4', 'video/webm']
 
     def get(self, request):
+        '''
+        Render upload video page, redirect to login if not signed in
+        '''
         if request.user.is_authenticated == False:
             return HttpResponseRedirect('/login')
         form = NewVideoForm()
+
         return render(request, self.template_name, {'form': form})
 
     def post(self, request):
+        '''
+        Validate video upload input and save video
+        '''
+
         form = NewVideoForm(request.POST, request.FILES)
         if form.is_valid():
             # create a new Video Entry
@@ -278,9 +354,11 @@ class NewVideoView(View):
             video = form.cleaned_data['video']
             is_private = form.cleaned_data['is_private']
 
+            # Verify video format
             if video.content_type not in self.supported_types:
                 return render(request, "error.html", {'error': "Error: Inavlid Video format {}!".format(video.content_type)})
 
+            # Generate unique string for video
             hash_str = str(round(time.time() * 1000)) + \
                 str(video.name) + str(request.user)
 
@@ -288,6 +366,7 @@ class NewVideoView(View):
             path = hash.hexdigest()[:10] + "_" + video.name
             video.name = path
 
+            # Create and save video object
             new_video = Video(
                 title=title,
                 description=description,
@@ -299,6 +378,7 @@ class NewVideoView(View):
             )
             new_video.save()
 
+            # Generate thumbnail for video
             dir_path = os.path.dirname(
                 os.path.dirname(os.path.realpath(__file__)))
 
@@ -306,6 +386,7 @@ class NewVideoView(View):
             img_output_path = dir_path + '/media/' + path + '.jpg'
             os.system('ffmpeg -i {ip} -ss 00:00:00.000 -vframes 1 {op}'.format(
                 ip=video_input_path, op=img_output_path))
+
             # redirect to detail view template of a Video
             return HttpResponseRedirect('/video/{id}'.format(id=new_video.id))
         else:
@@ -316,12 +397,20 @@ class CreatePlaylistView(View):
     template_name = "new_playlist.html"
 
     def get(self, request):
+        '''
+        Render create playlist page, redirect to login if not signed in
+        '''
+
         if request.user.is_authenticated == False:
             return HttpResponseRedirect('/login')
         form = NewPlaylistForm()
         return render(request, self.template_name, {'form': form})
 
     def post(self, request):
+        '''
+        Validate playlist creation input and save playlist
+        '''
+
         form = NewPlaylistForm(request.POST, request.FILES)
         if form.is_valid():
             # create a new Playlist Entry
@@ -340,8 +429,7 @@ class CreatePlaylistView(View):
 
             new_playlist.save()
 
-            # redirect to detail view template of a Video
-            return render(request, "error.html", {'error': "Playlist Created!"})
+            return render(request, "error.html", {'msg': "Playlist Created!"})
         else:
             return render(request, "error.html", {'error': "Error: Inavlid Form Input!"})
 
@@ -350,13 +438,22 @@ class AddVideoToPlaylistView(View):
     template_name = "add_to_playlist.html"
 
     def get(self, request, id):
+        '''
+        Render list of playlists owned by user
+        '''
+
         # fetch playlists from db
         playlists = Playlist.objects.filter(
             user_id=request.user.id).order_by('name')
         video_id = id
+
         return render(request, self.template_name, {'playlists': playlists, 'video_id': video_id})
 
     def post(self, request, id):
+        '''
+        Add video to list of selected playlists
+        '''
+
         playlists = request.POST.getlist('checks[]')
         video_id = id
         for playlist in playlists:
@@ -375,18 +472,29 @@ class EditVideoView(View):
     template_name = "edit_video.html"
 
     def get(self, request, id):
+        '''
+        Render edit video page
+        '''
+
         if request.user.is_authenticated == False:
             return HttpResponseRedirect('/login')
         form = EditVideoForm()
         return render(request, self.template_name, {'form': form})
 
     def post(self, request, id):
+        '''
+        Validate input from edit video and modify metadata
+        '''
+
         form = EditVideoForm(request.POST, request.FILES)
         if form.is_valid():
             try:
                 video_by_id = Video.objects.get(id=id)
             except ObjectDoesNotExist:
                 return render(request, "error.html", {'error': "Error: Invalid Video URL. Video does not exist!"})
+
+            if request.user.id != video_by_id.user_id:
+                return render(request, "error.html", {'error': "Error: you are not the owner. You cannot modify this video!"})
 
             title = form.cleaned_data['title']
             description = form.cleaned_data['description']
@@ -411,12 +519,20 @@ class EditUserView(View):
     template_name = "edit_user.html"
 
     def get(self, request):
+        '''
+        Render edit user page
+        '''
+
         if request.user.is_authenticated == False:
             return HttpResponseRedirect('/login')
         form = EditUserForm()
         return render(request, self.template_name, {'form': form})
 
     def post(self, request):
+        '''
+        Validate input from edit user and modify entry
+        '''
+
         form = EditUserForm(request.POST, request.FILES)
         id = request.user.id
         if form.is_valid():
@@ -448,11 +564,27 @@ class DeleteVideoView(View):
     template_name = "delete_video.html"
 
     def get(self, request, id):
+        '''
+        Render video deletion confirmation page
+        '''
+
         video_by_id = Video.objects.get(id=id)
+
         return render(request, self.template_name, {'video': video_by_id})
 
     def post(self, request, id):
-        video_by_id = Video.objects.get(id=id)
+        '''
+        Delete video and corresponding playlist entries
+        '''
+
+        try:
+            video_by_id = Video.objects.get(id=id)
+        except ObjectDoesNotExist:
+            return render(request, "error.html", {'error': "Error: Invalid Video URL. Video does not exist!"})
+
+        if request.user.id != video_by_id.user_id:
+            return render(request, "error.html", {'error': "Error: you are not the owner. You cannot modify this video!"})
+
         playlists = Playlist.objects.all()
         for playlist in playlists:
             video_ids = playlist.video_ids
@@ -471,6 +603,7 @@ class DeleteVideoView(View):
         except:
             pass
         video_by_id.delete()
+
         return render(request, "error.html", {'msg': "Video Deleted!"})
 
 
@@ -478,13 +611,22 @@ class RemoveVideoView(View):
     template_name = "remove_from_playlist.html"
 
     def get(self, request, id):
+        '''
+        Render remove video from playlist page
+        '''
+
         playlist_by_id = Playlist.objects.get(id=id)
         video_ids = playlist_by_id.video_ids
         videos = Video.objects.filter(id__in=video_ids)
         context = {'videos': videos, 'playlist': playlist_by_id}
+
         return render(request, self.template_name, context)
 
     def post(self, request, id):
+        '''
+        Validate list of videos to be removed and remove them
+        '''
+
         videos = request.POST.getlist('checks[]')
         playlist_id = id
         playlist_obj = Playlist.objects.get(id=playlist_id)
@@ -505,11 +647,26 @@ class DeletePlaylistView(View):
     template_name = "delete_playlist.html"
 
     def get(self, request, id):
+        '''
+        Render delete playlist page
+        '''
+
         playlist_by_id = Playlist.objects.get(id=id)
         return render(request, self.template_name, {'playlist': playlist_by_id})
 
     def post(self, request, id):
-        playlist_by_id = Playlist.objects.get(id=id)
+        '''
+        Validate and delete playlist
+        '''
+
+        try:
+            playlist_by_id = Playlist.objects.get(id=id)
+        except ObjectDoesNotExist:
+            return render(request, "error.html", {'error': "Error: Invalid Playlist URL. Playlist does not exist!"})
+
+        if request.user.id != playlist_by_id.user.id:
+            return render(request, "error.html", {'error': "Error: you do not own this playlist. You cannot modify it!"})
+
         playlist_by_id.delete()
 
         return render(request, "error.html", {'msg': "Playlist Deleted!"})
@@ -520,6 +677,9 @@ class ErrorView(View):
     error_string = "error"
 
     def get(self, request):
+        '''
+        Display error message
+        '''
         return render(request, self.template_name, {'error': self.error_string})
 
     def setError(self, error_msg):
