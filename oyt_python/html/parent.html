@@ -1,3 +1,17 @@
+<!-- Copyright 2021 Bhargav SNV
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License. -->
+
 {% load static %}
 <html>
 
@@ -11,9 +25,13 @@
     crossorigin="anonymous">
 <link href="https://vjs.zencdn.net/7.11.4/video-js.css" rel="stylesheet" />
 <link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.9.0/css/all.css">
+<link
+    href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;700&display=swap"
+    rel="stylesheet">
+<link rel="stylesheet"
+    href="https://use.fontawesome.com/releases/v5.9.0/css/all.css">
 <link rel="stylesheet" href="{% static 'style.css' %}">
+
 <body>
     <center>
         <ul class="nav nav-tabs">
@@ -23,20 +41,24 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if request.path|slice:':9' == '/playlist' %} active {% endif %}"
-                    href="/playlist_index"><i class="fas fa-play"></i> Playlists</a>
+                    href="/playlist_index"><i class="fas fa-play"></i>
+                    Playlists</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if request.path == '/new_video' %} active {% endif %}"
-                    href="/new_video"><i class="fas fa-arrow-up"></i> Upload Video</a>
+                    href="/new_video"><i class="fas fa-arrow-up"></i> Upload
+                    Video</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if request.path == '/new_playlist' %} active {% endif %}"
-                    href="/new_playlist"><i class="fas fa-plus"></i> Create Playlist</a>
+                    href="/new_playlist"><i class="fas fa-plus"></i> Create
+                    Playlist</a>
             </li>
             {% if user.is_authenticated %}
             <li class="nav-item">
                 <a class="nav-link {% if request.path == '/edit_user' %} active {% endif %}"
-                    href="/edit_user"><i class="fas fa-pen"></i> Edit Profile</a>
+                    href="/edit_user"><i class="fas fa-pen"></i> Edit
+                    Profile</a>
             </li>
             </li>
             <li class="nav-item">
@@ -53,31 +75,31 @@
             </li>
             {% endif %}
 
-        {% if request.path == '/' %}
+            {% if request.path == '/' %}
             <div class=" container-fluid" id="homesearch">
                 <form class="d-flex" action="/" method="POST">
                     {% csrf_token %}
 
                     <input class="form-control me-2" type="search"
-                           placeholder="Search Videos" aria-label="Search"
-                           name="search_value">
-                    <button class="btn btn-primary"
-                            type="submit"><i class="fas fa-search"></i></button>
+                        placeholder="Search Videos" aria-label="Search"
+                        name="search_value">
+                    <button class="btn btn-primary" type="submit"><i
+                            class="fas fa-search"></i></button>
                 </form>
             </div>
         </ul>
         {% elif request.path == '/playlist_index' %}
-            <div class=" container-fluid">
-                <form class="d-flex" action="/playlist_index" method="POST">
-                    {% csrf_token %}
+        <div class=" container-fluid">
+            <form class="d-flex" action="/playlist_index" method="POST">
+                {% csrf_token %}
 
-                    <input class="form-control me-2" type="search"
-                        placeholder="Search Playlists" aria-label="Search"
-                        name="search_value">
-                    <button class="btn btn-primary"
-                        type="submit"><i class="fas fa-search"></i></button>
-                </form>
-            </div>
+                <input class="form-control me-2" type="search"
+                    placeholder="Search Playlists" aria-label="Search"
+                    name="search_value">
+                <button class="btn btn-primary" type="submit"><i
+                        class="fas fa-search"></i></button>
+            </form>
+        </div>
         {% endif %}
         </ul>
         <br>
